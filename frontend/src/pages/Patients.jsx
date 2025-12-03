@@ -34,12 +34,8 @@ const Patients = () => {
       <div className="page-header">
         <div>
           <h1>Patients</h1>
-          <p className="page-subtitle">Manage and view all patient records</p>
+          <p className="page-subtitle">View all registered patient records</p>
         </div>
-        <button className="btn-primary">
-          <Plus size={18} />
-          Add New Patient
-        </button>
       </div>
 
       <Card className="patients-card">

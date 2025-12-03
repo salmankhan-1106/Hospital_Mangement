@@ -1,8 +1,18 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Menu, Bell, Search, User } from 'lucide-react';
 import './Navbar.css';
 
 const Navbar = ({ toggleSidebar }) => {
+  const [userName, setUserName] = useState('Dr. Admin');
+
+  useEffect(() => {
+    const user = localStorage.getItem('user');
+    if (user) {
+      const userData = JSON.parse(user);
+      setUserName(userData.name || 'Dr. Admin');
+    }
+  }, []);
+
   return (
     <nav className="navbar">
       <div className="navbar-left">
@@ -30,7 +40,7 @@ const Navbar = ({ toggleSidebar }) => {
             <User size={20} />
           </div>
           <div className="user-info">
-            <span className="user-name">Dr. Admin</span>
+            <span className="user-name">{userName}</span>
             <span className="user-role">Administrator</span>
           </div>
         </div>

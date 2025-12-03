@@ -105,19 +105,19 @@ const Dashboard = () => {
           <div className="quick-stats">
             <div className="quick-stat-item">
               <div className="quick-stat-label">Waiting Patients</div>
-              <div className="quick-stat-value">12</div>
+              <div className="quick-stat-value">0</div>
             </div>
             <div className="quick-stat-item">
               <div className="quick-stat-label">Available Rooms</div>
-              <div className="quick-stat-value">8</div>
+              <div className="quick-stat-value">0</div>
             </div>
             <div className="quick-stat-item">
               <div className="quick-stat-label">On Leave</div>
-              <div className="quick-stat-value">3</div>
+              <div className="quick-stat-value">0</div>
             </div>
             <div className="quick-stat-item">
               <div className="quick-stat-label">Emergency Cases</div>
-              <div className="quick-stat-value">2</div>
+              <div className="quick-stat-value">0</div>
             </div>
           </div>
         </Card>

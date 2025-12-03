@@ -39,12 +39,8 @@ const Appointments = () => {
       <div className="page-header">
         <div>
           <h1>Appointments</h1>
-          <p className="page-subtitle">Manage and schedule appointments</p>
+          <p className="page-subtitle">View and manage patient appointments</p>
         </div>
-        <button className="btn-primary">
-          <Plus size={18} />
-          Schedule Appointment
-        </button>
       </div>
 
       <div className="appointments-filters">

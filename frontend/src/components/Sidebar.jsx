@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { 
   LayoutDashboard, 
   Users, 
@@ -14,6 +14,7 @@ import './Sidebar.css';
 
 const Sidebar = ({ isOpen, setIsOpen }) => {
   const location = useLocation();
+  const navigate = useNavigate();
 
   const menuItems = [
     { path: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
@@ -22,6 +23,12 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
   ];
 
   const isActive = (path) => location.pathname === path;
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    navigate('/login');
+  };
 
   return (
     <>
@@ -47,7 +54,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
         </nav>
 
         <div className="sidebar-footer">
-          <button className="nav-item logout-btn">
+          <button className="nav-item logout-btn" onClick={handleLogout}>
             <LogOut size={22} className="nav-icon" />
             {isOpen && <span className="nav-label">Logout</span>}
           </button>
