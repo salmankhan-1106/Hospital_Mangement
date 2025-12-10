@@ -4,9 +4,9 @@ from sqlalchemy.orm import Session
 from datetime import timedelta
 from typing import Union
 
-from database import get_db
-from models import Patient, Doctor
-from schemas import (
+from app.database import get_db
+from app.models import Patient, Doctor
+from app.schemas import (
     Token, 
     PatientCreate, 
     PatientLogin, 
@@ -15,15 +15,16 @@ from schemas import (
     PatientResponse,
     DoctorResponse
 )
-from crud.users import (
+from app.crud.users import (
     authenticate_patient,
+    
     authenticate_doctor,
     create_patient,
     create_doctor,
     get_patient_by_contact,
     get_doctor_by_email
 )
-from utils import create_access_token, verify_token, ACCESS_TOKEN_EXPIRE_MINUTES
+from app.utils import create_access_token, verify_token, ACCESS_TOKEN_EXPIRE_MINUTES
 
 router = APIRouter(prefix="/api/auth", tags=["Authentication"])
 

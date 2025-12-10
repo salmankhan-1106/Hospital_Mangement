@@ -1,7 +1,8 @@
+import logging
 from sqlalchemy.orm import Session
-from models import Patient, Doctor
-from schemas import PatientCreate, DoctorCreate
-from utils import get_password_hash, verify_password
+from app.models import Patient, Doctor
+from app.schemas import PatientCreate, DoctorCreate
+from app.utils import get_password_hash, verify_password
 from uuid import UUID
 
 # Patient CRUD operations
@@ -27,10 +28,20 @@ def create_patient(db: Session, patient: PatientCreate):
 
 def authenticate_patient(db: Session, contact: str, password: str):
     """Authenticate patient with contact and password"""
+    logger = logging.getLogger(__name__)
+    logger.debug("Authenticating patient with contact=%s", contact)
     patient = get_patient_by_contact(db, contact)
     if not patient:
+        logger.debug("Patient not found: %s", contact)
         return False
+
+    # Handle case where password_hash might be None or empty
+    if not patient.password_hash:
+        logger.debug("Patient has no password_hash set: %s", contact)
+        return False
+
     if not verify_password(password, patient.password_hash):
+        logger.debug("Password verification failed for patient: %s", contact)
         return False
     return patient
 
@@ -62,9 +73,19 @@ def create_doctor(db: Session, doctor: DoctorCreate):
 
 def authenticate_doctor(db: Session, email: str, password: str):
     """Authenticate doctor with email and password"""
+    logger = logging.getLogger(__name__)
+    logger.debug("Authenticating doctor with email=%s", email)
     doctor = get_doctor_by_email(db, email)
     if not doctor:
+        logger.debug("Doctor not found: %s", email)
         return False
+
+    # Handle case where password_hash might be None or empty
+    if not doctor.password_hash:
+        logger.debug("Doctor has no password_hash set: %s", email)
+        return False
+
     if not verify_password(password, doctor.password_hash):
+        logger.debug("Password verification failed for doctor: %s", email)
         return False
     return doctor

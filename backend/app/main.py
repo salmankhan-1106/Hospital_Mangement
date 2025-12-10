@@ -1,7 +1,12 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
+import logging
 from fastapi.middleware.cors import CORSMiddleware
-from database import engine, Base
-from routers import auth, appointments, patients
+from sqlalchemy.orm import Session
+from app.database import Base, SessionLocal, engine
+from app.routers import appointments, auth, patients
+# Import all models so SQLAlchemy can create the tables
+from app import models
+
 
 # Create database tables
 Base.metadata.create_all(bind=engine)
@@ -11,6 +16,9 @@ app = FastAPI(
     description="Backend API for Hospital Management System",
     version="1.0.0"
 )
+
+# Configure basic logging for debugging auth issues
+logging.basicConfig(level=logging.DEBUG)
 
 # Configure CORS - must be before including routers
 app.add_middleware(
@@ -38,42 +46,23 @@ async def health_check():
 @app.get("/test-db")
 async def test_database():
     """Test database connection and check if tables exist"""
-    from database import SessionLocal
     from sqlalchemy import text
     
     db = SessionLocal()
+@app.get("/init-db")
+async def init_database():
+    """Initialize database tables (safe to call multiple times)"""
     try:
-        # Test basic connection
-        result = db.execute(text("SELECT 1")).scalar()
-        
-        # Check if config table exists and has data
-        config_check = db.execute(text("SELECT COUNT(*) FROM config")).scalar()
-        
-        # Check if patients table exists
-        patients_count = db.execute(text("SELECT COUNT(*) FROM patients")).scalar()
-        
-        # Check if doctors table exists
-        doctors_count = db.execute(text("SELECT COUNT(*) FROM doctors")).scalar()
-        
-        # Check if appointments table exists
-        appointments_count = db.execute(text("SELECT COUNT(*) FROM appointments")).scalar()
-        
+        Base.metadata.create_all(bind=engine)
         return {
-            "database_connected": True,
-            "connection_test": result == 1,
-            "config_table_rows": config_check,
-            "patients_count": patients_count,
-            "doctors_count": doctors_count,
-            "appointments_count": appointments_count,
-            "message": "Database is connected and all tables exist!"
+            "status": "success",
+            "message": "Database tables initialized/updated successfully!"
         }
     except Exception as e:
         return {
-            "database_connected": False,
-            "error": str(e)
+            "status": "error",
+            "message": str(e)
         }
-    finally:
-        db.close()
 
 if __name__ == "__main__":
     import uvicorn

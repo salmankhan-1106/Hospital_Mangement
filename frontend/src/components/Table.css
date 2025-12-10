@@ -1,24 +1,43 @@
 .table-container {
   overflow-x: auto;
+  border-radius: 16px;
+  border: 2px solid var(--border-color);
+  background: var(--bg-primary);
+}
+
+.table-container::-webkit-scrollbar {
+  height: 8px;
+}
+
+.table-container::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
   border-radius: 8px;
-  border: 1px solid var(--border-color);
+}
+
+.table-container::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  border-radius: 8px;
+}
+
+.table-container::-webkit-scrollbar-thumb:hover {
+  background: #0ea5e9;
 }
 
 .table {
   width: 100%;
   border-collapse: collapse;
-  background: white;
+  background: var(--bg-primary);
 }
 
 .table thead {
-  background: var(--bg-secondary);
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(14, 165, 233, 0.03) 100%);
   border-bottom: 2px solid var(--border-color);
 }
 
 .table th {
   text-align: left;
-  padding: 1rem;
-  font-weight: 600;
+  padding: 1.125rem;
+  font-weight: 700;
   color: var(--text-primary);
   font-size: 0.875rem;
   text-transform: uppercase;
@@ -26,17 +45,19 @@
 }
 
 .table td {
-  padding: 1rem;
+  padding: 1.125rem;
   border-bottom: 1px solid var(--border-color);
   color: var(--text-primary);
+  font-size: 0.95rem;
 }
 
 .table tbody tr {
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .table tbody tr:hover {
   background: var(--bg-secondary);
+  transform: translateX(4px);
 }
 
 .table tbody tr.clickable {
@@ -44,7 +65,9 @@
 }
 
 .table tbody tr.clickable:hover {
-  background: rgba(79, 70, 229, 0.05);
+  background: rgba(59, 130, 246, 0.08);
+  transform: scale(1.005) translateX(4px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
 }
 
 .table tbody tr:last-child td {

@@ -8,19 +8,31 @@ import {
   LogOut,
   ChevronLeft,
   ChevronRight,
-  Activity
+  Activity,
+  BookOpen,
+  User
 } from 'lucide-react';
 import './Sidebar.css';
 
-const Sidebar = ({ isOpen, setIsOpen }) => {
+const Sidebar = ({ isOpen, setIsOpen, userType }) => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const menuItems = [
+  const doctorMenu = [
     { path: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
     { path: '/patients', icon: Users, label: 'Patients' },
     { path: '/appointments', icon: Calendar, label: 'Appointments' },
+    { path: '/doctors', icon: UserCircle, label: 'Profile' },
   ];
+
+  const patientMenu = [
+    { path: '/patient/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+    { path: '/patient/appointments', icon: Calendar, label: 'My Appointments' },
+    { path: '/patient/book', icon: BookOpen, label: 'Book Appointment' },
+    { path: '/patient/profile', icon: User, label: 'Profile' },
+  ];
+
+  const menuItems = userType === 'patient' ? patientMenu : doctorMenu;
 
   const isActive = (path) => location.pathname === path;
 
@@ -28,13 +40,14 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     navigate('/login');
+    window.location.reload(); // Ensure auth state resets
   };
 
   return (
     <>
       <div className={`sidebar ${isOpen ? 'open' : 'closed'}`}>
         <div className="sidebar-header">
-          <div className="logo">
+          <div className="logo" onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
             <Activity size={32} className="logo-icon" />
             {isOpen && <span className="logo-text">HealthCare</span>}
           </div>

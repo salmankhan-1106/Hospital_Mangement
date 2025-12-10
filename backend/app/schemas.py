@@ -28,7 +28,7 @@ class PatientResponse(BaseModel):
     created_at: datetime
     
     class Config:
-        from_attributes = True
+        orm_mode = True
 
 # Doctor Schemas
 class DoctorCreate(BaseModel):
@@ -42,20 +42,37 @@ class DoctorLogin(BaseModel):
     email: EmailStr
     password: str
 
+class DoctorUpdate(BaseModel):
+    name: Optional[str] = None
+    phone: Optional[str] = None
+    qualification: Optional[str] = None
+    specialization: Optional[str] = None
+    department: Optional[str] = None
+    experience: Optional[str] = None
+    bio: Optional[str] = None
+
 class DoctorResponse(BaseModel):
     id: UUID
     name: str
     email: str
-    qualification: Optional[str]
+    phone: Optional[str] = None
+    qualification: Optional[str] = None
+    specialization: Optional[str] = None
+    department: Optional[str] = None
+    experience: Optional[str] = None
+    bio: Optional[str] = None
     created_at: datetime
     
     class Config:
-        from_attributes = True
+        orm_mode = True
 
 # Appointment Schemas
 class AppointmentCreate(BaseModel):
     doctor_id: UUID
     problem: str
+    severity: Optional[str] = None  # mild, moderate, severe
+    duration: Optional[str] = None  # e.g., "2 days", "1 week"
+    medical_history: Optional[str] = None  # patient's previous diseases/conditions
 
 class AppointmentUpdate(BaseModel):
     result: Optional[str] = None
@@ -67,13 +84,18 @@ class AppointmentResponse(BaseModel):
     patient_id: UUID
     doctor_id: Optional[UUID]
     problem: str
+    severity: Optional[str] = None
+    duration: Optional[str] = None
+    medical_history: Optional[str] = None
     result: Optional[str]
     status: str
     created_at: datetime
     updated_at: datetime
+    patient: Optional['PatientResponse'] = None
+    doctor: Optional['DoctorResponse'] = None
     
     class Config:
-        from_attributes = True
+        orm_mode = True
 
 # Appointment code lookup schema
 class AppointmentCodeLookup(BaseModel):

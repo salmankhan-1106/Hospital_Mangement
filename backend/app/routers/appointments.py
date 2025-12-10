@@ -2,15 +2,15 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List, Union
 
-from database import get_db
-from models import Patient, Doctor, Appointment
-from schemas import (
+from app.database import get_db
+from app.models import Patient, Doctor, Appointment
+from app.schemas import (
     AppointmentCreate,
     AppointmentUpdate,
     AppointmentResponse,
     AppointmentCodeLookup
 )
-from crud.appointments import (
+from app.crud.appointments import (
     create_appointment,
     get_appointment_by_code,
     get_appointment_by_id,
@@ -20,7 +20,7 @@ from crud.appointments import (
     update_appointment,
     cancel_appointment
 )
-from routers.auth import get_current_user
+from app.routers.auth import get_current_user
 
 router = APIRouter(prefix="/api/appointments", tags=["Appointments"])
 
@@ -105,6 +105,8 @@ async def update_appointment_route(
     db: Session = Depends(get_db)
 ):
     """Update appointment (doctor only - add result and change status)"""
+    print(f"\n[ROUTER] Update appointment request - ID: {appointment_id}, Status: {appointment.status}, Result: {appointment.result}")
+    
     if not isinstance(current_user, Doctor):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
@@ -127,6 +129,7 @@ async def update_appointment_route(
             detail="Appointment not found"
         )
     
+    print(f"[ROUTER] Update successful - New status: {db_appointment.status}")
     return db_appointment
 
 @router.delete("/{appointment_id}", response_model=AppointmentResponse)

@@ -10,7 +10,15 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """Verify a password against a hash"""
-    return bcrypt.checkpw(plain_password.encode('utf-8'), hashed_password.encode('utf-8'))
+    try:
+        # bcrypt.checkpw expects bytes for both arguments
+        return bcrypt.checkpw(
+            plain_password.encode('utf-8'), 
+            hashed_password.encode('utf-8') if isinstance(hashed_password, str) else hashed_password
+        )
+    except (ValueError, TypeError):
+        # Invalid hash format
+        return False
 
 def get_password_hash(password: str) -> str:
     """Hash a password - truncate if longer than 72 bytes"""
