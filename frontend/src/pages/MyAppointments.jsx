@@ -332,6 +332,16 @@ const MyAppointments = () => {
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                 <div style={{
                   padding: '1.5rem',
+                  background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.08) 0%, rgba(109, 40, 217, 0.08) 100%)',
+                  borderRadius: '16px',
+                  border: '2px solid rgba(139, 92, 246, 0.2)'
+                }}>
+                  <div style={{ color: '#8b5cf6', fontSize: '0.85rem', fontWeight: '600', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Appointment Code</div>
+                  <div style={{ fontSize: '1.4rem', fontWeight: '800', color: '#1e293b', fontFamily: 'monospace', letterSpacing: '1px' }}>{selectedAppointment.appointmentCode || 'N/A'}</div>
+                </div>
+
+                <div style={{
+                  padding: '1.5rem',
                   background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(139, 92, 246, 0.08) 100%)',
                   borderRadius: '16px',
                   border: '2px solid rgba(59, 130, 246, 0.2)'
