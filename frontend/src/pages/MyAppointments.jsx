@@ -27,7 +27,8 @@ const MyAppointments = () => {
           date: new Date(appt.created_at).toLocaleDateString(),
           time: new Date(appt.created_at).toLocaleTimeString(),
           problem: appt.problem,
-          status: appt.status
+          status: appt.status,
+          cancellation_reason: appt.cancellation_reason
         })));
       } catch (err) {
         setError('Failed to load appointments');
@@ -399,7 +400,6 @@ const MyAppointments = () => {
                            selectedAppointment.status === 'pending' ? '#f59e0b' : '#ef4444',
                     textTransform: 'capitalize'
                   }}>
-                    {selectedAppointment.status === 'pending' ? '⏳ ' : selectedAppointment.status === 'completed' ? '✅ ' : '❌ '}
                     {selectedAppointment.status}
                   </div>
                   {selectedAppointment.status === 'pending' && (
@@ -410,6 +410,23 @@ const MyAppointments = () => {
                   {selectedAppointment.status === 'completed' && (
                     <div style={{ color: '#059669', fontSize: '0.9rem', marginTop: '0.5rem', fontWeight: '600' }}>
                       Your appointment has been completed successfully!
+                    </div>
+                  )}
+                  {selectedAppointment.status === 'cancelled' && selectedAppointment.cancellation_reason && (
+                    <div style={{ 
+                      color: '#ef4444', 
+                      fontSize: '0.9rem', 
+                      marginTop: '0.75rem', 
+                      fontWeight: '600',
+                      padding: '0.75rem',
+                      background: 'rgba(239, 68, 68, 0.1)',
+                      borderRadius: '8px',
+                      border: '1px solid rgba(239, 68, 68, 0.3)'
+                    }}>
+                      <div style={{ fontSize: '0.75rem', marginBottom: '0.25rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                        Reason for Cancellation:
+                      </div>
+                      {selectedAppointment.cancellation_reason}
                     </div>
                   )}
                 </div>

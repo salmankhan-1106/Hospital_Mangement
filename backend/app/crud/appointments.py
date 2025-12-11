@@ -82,6 +82,8 @@ def update_appointment(db: Session, appointment_id: UUID, appointment: Appointme
         db_appointment.result = appointment.result
     if appointment.status is not None:
         db_appointment.status = appointment.status
+    if appointment.cancellation_reason is not None:
+        db_appointment.cancellation_reason = appointment.cancellation_reason
     
     print(f"[APPOINTMENT UPDATE] After - Status: {db_appointment.status}, Result: {db_appointment.result}")
     

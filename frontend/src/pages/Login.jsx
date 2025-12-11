@@ -465,6 +465,7 @@ const Login = ({ setIsAuthenticated, setUserType }) => {
                     placeholder="John Doe"
                     value={formData.name}
                     onChange={handleChange}
+                    autoComplete="off"
                     required
                   />
                 </div>
@@ -477,12 +478,13 @@ const Login = ({ setIsAuthenticated, setUserType }) => {
                     <div className="input-wrapper">
                       <Lock size={20} className="input-icon" />
                       <input
-                        type="text"
+                        type="password"
                         id="secret_key"
                         name="secret_key"
                         placeholder="Enter secret key"
                         value={formData.secret_key}
                         onChange={handleChange}
+                        autoComplete="off"
                         required
                       />
                     </div>
@@ -499,6 +501,7 @@ const Login = ({ setIsAuthenticated, setUserType }) => {
                         placeholder="MBBS, MD"
                         value={formData.qualification}
                         onChange={handleChange}
+                        autoComplete="off"
                       />
                     </div>
                   </div>
@@ -517,6 +520,7 @@ const Login = ({ setIsAuthenticated, setUserType }) => {
                       placeholder="+92-300-1234567"
                       value={formData.contact}
                       onChange={handleChange}
+                      autoComplete="off"
                       required
                     />
                   </div>
@@ -535,7 +539,7 @@ const Login = ({ setIsAuthenticated, setUserType }) => {
                       placeholder="admin@healthcare.com"
                       value={formData.email}
                       onChange={handleChange}
-                      autoComplete="email"
+                      autoComplete="off"
                       required
                     />
                   </div>
@@ -557,6 +561,7 @@ const Login = ({ setIsAuthenticated, setUserType }) => {
                   placeholder="+92-300-1234567"
                   value={formData.contact}
                   onChange={handleChange}
+                  autoComplete="off"
                   required
                 />
               </div>
@@ -575,7 +580,7 @@ const Login = ({ setIsAuthenticated, setUserType }) => {
                   placeholder="admin@healthcare.com"
                   value={formData.email}
                   onChange={(e) => setFormData({...formData, email: e.target.value})}
-                  autoComplete="username"
+                  autoComplete="off"
                   required
                 />
               </div>
@@ -594,7 +599,7 @@ const Login = ({ setIsAuthenticated, setUserType }) => {
                 placeholder="Enter your password"
                 value={formData.password}
                 onChange={handleChange}
-                autoComplete={isRegistering ? 'new-password' : 'current-password'}
+                autoComplete="off"
                 required
               />
               <button

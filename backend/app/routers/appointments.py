@@ -8,7 +8,9 @@ from app.schemas import (
     AppointmentCreate,
     AppointmentUpdate,
     AppointmentResponse,
-    AppointmentCodeLookup
+    AppointmentCodeLookup,
+    AppointmentConfirm,
+    AppointmentReject
 )
 from app.crud.appointments import (
     create_appointment,
@@ -165,3 +167,74 @@ async def cancel_appointment_route(
     
     cancelled_appointment = cancel_appointment(db, appointment_uuid)
     return cancelled_appointment
+
+@router.post("/confirm", response_model=AppointmentResponse)
+async def confirm_appointment(
+    confirm_data: AppointmentConfirm,
+    current_user: Union[Patient, Doctor] = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Confirm appointment (doctor only)"""
+    if not isinstance(current_user, Doctor):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Only doctors can confirm appointments"
+        )
+    
+    # Get appointment
+    db_appointment = get_appointment_by_id(db, confirm_data.appointment_id)
+    if not db_appointment:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Appointment not found"
+        )
+    
+    # Check if appointment belongs to this doctor
+    if db_appointment.doctor_id != current_user.id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="You can only confirm your own appointments"
+        )
+    
+    # Update status to confirmed
+    appointment_update = AppointmentUpdate(status="confirmed")
+    updated_appointment = update_appointment(db, confirm_data.appointment_id, appointment_update)
+    
+    return updated_appointment
+
+@router.post("/reject", response_model=AppointmentResponse)
+async def reject_appointment(
+    reject_data: AppointmentReject,
+    current_user: Union[Patient, Doctor] = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Reject appointment with reason (doctor only)"""
+    if not isinstance(current_user, Doctor):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Only doctors can reject appointments"
+        )
+    
+    # Get appointment
+    db_appointment = get_appointment_by_id(db, reject_data.appointment_id)
+    if not db_appointment:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Appointment not found"
+        )
+    
+    # Check if appointment belongs to this doctor
+    if db_appointment.doctor_id != current_user.id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="You can only reject your own appointments"
+        )
+    
+    # Update status to cancelled with reason
+    appointment_update = AppointmentUpdate(
+        status="cancelled",
+        cancellation_reason=reject_data.cancellation_reason
+    )
+    updated_appointment = update_appointment(db, reject_data.appointment_id, appointment_update)
+    
+    return updated_appointment

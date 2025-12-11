@@ -76,7 +76,8 @@ class AppointmentCreate(BaseModel):
 
 class AppointmentUpdate(BaseModel):
     result: Optional[str] = None
-    status: Optional[str] = None  # pending, completed, cancelled
+    status: Optional[str] = None  # pending, confirmed, cancelled, completed
+    cancellation_reason: Optional[str] = None  # reason if cancelled
 
 class AppointmentResponse(BaseModel):
     id: UUID
@@ -89,6 +90,7 @@ class AppointmentResponse(BaseModel):
     medical_history: Optional[str] = None
     result: Optional[str]
     status: str
+    cancellation_reason: Optional[str] = None
     created_at: datetime
     updated_at: datetime
     patient: Optional['PatientResponse'] = None
@@ -100,3 +102,11 @@ class AppointmentResponse(BaseModel):
 # Appointment code lookup schema
 class AppointmentCodeLookup(BaseModel):
     appointment_code: str
+
+# Appointment action schemas
+class AppointmentConfirm(BaseModel):
+    appointment_id: UUID
+
+class AppointmentReject(BaseModel):
+    appointment_id: UUID
+    cancellation_reason: str = Field(..., description="Reason for cancelling the appointment")
