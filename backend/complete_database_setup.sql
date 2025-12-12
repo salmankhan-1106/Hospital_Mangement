@@ -1,8 +1,8 @@
 ================================================================================
 -- HOSPITAL MANAGEMENT DATABASE - COMPLETE SETUP SCRIPT
 -- Tables: Appointments, Doctors, Patients
--- Generated: December 11, 2025
--- This script will create all tables with sample data
+-- Generated: December 12, 2025
+-- This master script combines all database setup and configuration
 ================================================================================
 
 SET statement_timeout = 0;
@@ -41,6 +41,21 @@ ALTER FUNCTION public.appointments_set_updated_at() OWNER TO postgres;
 
 SET default_tablespace = '';
 SET default_table_access_method = heap;
+
+-- ========================================================
+-- CONFIGURATION TABLE
+-- ========================================================
+
+-- Set admin secret key in a simple way (using a single-row config table)
+CREATE TABLE IF NOT EXISTS config (
+  key TEXT PRIMARY KEY,
+  value TEXT NOT NULL
+);
+
+-- Store the admin secret key hash
+INSERT INTO config(key, value) 
+VALUES ('admin_secret_hash', crypt('123$', gen_salt('bf')))
+ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value;
 
 -- ========================================================
 -- PATIENTS TABLE
@@ -103,7 +118,6 @@ CREATE TABLE public.appointments (
     patient_id uuid NOT NULL,
     doctor_id uuid,
     problem text NOT NULL,
-    result text,
     status text DEFAULT 'pending'::text NOT NULL,
     severity text,
     duration text,
@@ -166,11 +180,11 @@ ON CONFLICT DO NOTHING;
 -- SAMPLE DATA - APPOINTMENTS
 -- ========================================================
 
-INSERT INTO public.appointments (id, appointment_code, patient_id, doctor_id, problem, result, status, severity, duration, medical_history, created_at, updated_at) VALUES
-('51a97223-0399-4a91-a547-a22ec57822c6', 'KQQHWZLU', 'f2f6401b-92a4-4d17-a133-7c3999a10ca6', 'ed226719-18cd-41ec-bae7-9914d3e729bb', 'Headache and fever', NULL, 'pending', NULL, NULL, NULL, '2025-12-11 01:04:04.937478+05', '2025-12-11 01:04:04.937478+05'),
-('061c1a7b-33f9-4140-bdcd-ac3cad7c0898', 'AGOCK6QZ', 'f2f6401b-92a4-4d17-a133-7c3999a10ca6', 'ed226719-18cd-41ec-bae7-9914d3e729bb', 'Heart palpitations', NULL, 'pending', NULL, NULL, NULL, '2025-12-11 01:09:09.171064+05', '2025-12-11 01:09:09.171064+05'),
-('c175bb70-5977-4ef1-b464-14b74e24e129', 'M93PMHSU', 'f2f6401b-92a4-4d17-a133-7c3999a10ca6', 'ed226719-18cd-41ec-bae7-9914d3e729bb', 'Back pain', NULL, 'pending', NULL, NULL, NULL, '2025-12-11 01:14:31.695885+05', '2025-12-11 01:14:31.695885+05'),
-('c7b7477a-70b5-437a-9121-8abcb9b58ad9', 'NQ3R484Y', 'f2f6401b-92a4-4d17-a133-7c3999a10ca6', 'ed226719-18cd-41ec-bae7-9914d3e729bb', 'Skin rash', NULL, 'pending', NULL, NULL, NULL, '2025-12-11 01:19:44.248555+05', '2025-12-11 01:19:44.248555+05')
+INSERT INTO public.appointments (id, appointment_code, patient_id, doctor_id, problem, status, severity, duration, medical_history, created_at, updated_at) VALUES
+('51a97223-0399-4a91-a547-a22ec57822c6', 'KQQHWZLU', 'f2f6401b-92a4-4d17-a133-7c3999a10ca6', 'ed226719-18cd-41ec-bae7-9914d3e729bb', 'Headache and fever', 'pending', NULL, NULL, NULL, '2025-12-11 01:04:04.937478+05', '2025-12-11 01:04:04.937478+05'),
+('061c1a7b-33f9-4140-bdcd-ac3cad7c0898', 'AGOCK6QZ', 'f2f6401b-92a4-4d17-a133-7c3999a10ca6', 'ed226719-18cd-41ec-bae7-9914d3e729bb', 'Heart palpitations', 'pending', NULL, NULL, NULL, '2025-12-11 01:09:09.171064+05', '2025-12-11 01:09:09.171064+05'),
+('c175bb70-5977-4ef1-b464-14b74e24e129', 'M93PMHSU', 'f2f6401b-92a4-4d17-a133-7c3999a10ca6', 'ed226719-18cd-41ec-bae7-9914d3e729bb', 'Back pain', 'pending', NULL, NULL, NULL, '2025-12-11 01:14:31.695885+05', '2025-12-11 01:14:31.695885+05'),
+('c7b7477a-70b5-437a-9121-8abcb9b58ad9', 'NQ3R484Y', 'f2f6401b-92a4-4d17-a133-7c3999a10ca6', 'ed226719-18cd-41ec-bae7-9914d3e729bb', 'Skin rash', 'pending', NULL, NULL, NULL, '2025-12-11 01:19:44.248555+05', '2025-12-11 01:19:44.248555+05')
 ON CONFLICT DO NOTHING;
 
 -- ========================================================
@@ -183,3 +197,6 @@ SELECT
   (SELECT COUNT(*) FROM patients) AS patients_count,
   (SELECT COUNT(*) FROM doctors) AS doctors_count,
   (SELECT COUNT(*) FROM appointments) AS appointments_count;
+
+SELECT 'Admin secret key is: 123$' AS admin_credentials_note;
+SELECT 'Doctor profile columns added/verified!' AS migration_status;
